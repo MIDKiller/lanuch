@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/index.css">
+	</head>
+
+	<body>
+
+		<div id="main">
+			<!-- list容器 -->
+			<div id="nav_wraper">
+				<!-- -->
+			</div>
+			<!--stackview 容器-->
+			<div id="menu_wraper">
+
+			</div>
+		</div>
+	</body>
+	<script src="js/data.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/view.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/listview.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/girdview.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/nav.js" type="text/javascript" charset="utf-8"></script>
+
+	<script type="text/javascript">
+		function page_init() {
+			var ctrl = new Controller(GridView, list);
+			var stackview = new StackView(document.getElementById("menu_wraper"), ctrl);
+
+			var ctrl2 = new Controller(MenuItemView, items);
+			var listview = new ListView(document.getElementById("nav_wraper"), ctrl2, null);
+
+			listview.changeFocus(true);
+			stackview.changeFocus(false);
+			
+			//var len = ctrl.getCount();
+	
+			document.onkeydown = function(e) {
+
+				var key = e.keyCode;
+				
+				if (stackview.isFocus()) {
+					
+					var grid_index = stackview.getCurrItemIndex() + 1;
+					
+					var accept = stackview.onkeyEvent(key);
+					
+					listview.setFocusItem(grid_index);
+
+					if (!accept) {
+						
+						stackview.changeFocus(false);
+						listview.changeFocus(true);
+						
+					}
+
+				}
+				if (listview.isFocus()) {
+
+					var accept = listview.onKeyEvent(key);
+					var list_index = listview.getCurrentIndex();
+					
+					if (accept) {
+						
+						stackview.setVisiblePage(list_index);
+						
+						if (key == keycode.key_down) {
+							
+							stackview.onkeyEvent(keycode.key_down);
+							listview.changeFocus(false);
+							stackview.changeFocus(true);
+							
+						}
+					}
+				}
+			}
+		}
+
+		page_init();
+	</script>
+	
+	
+	
+</html>
